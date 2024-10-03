@@ -7,7 +7,7 @@ const cors = require('cors'); // Importando o CORS
 
 // Configuração do app Express
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usar a variável de ambiente PORT, ou 3000 como padrão
 
 // Middleware para habilitar CORS
 app.use(cors());
@@ -20,11 +20,11 @@ app.use(express.static(path.join(__dirname, 'public'))); // Certifique-se de que
 
 // Configuração do cliente PostgreSQL
 const client = new Client({
-    host: 'pg-278b8b8f-fl4sh-cbdb.h.aivencloud.com', // Altere para o seu host
-    port: 27783, // Altere para a porta que você está usando
-    database: 'defaultdb', // Nome do seu banco de dados
-    user: 'avnadmin', // Nome de usuário
-    password: 'AVNS_YTUHLeMD2QqdpF4fP-U', // Senha
+    host: process.env.DB_HOST, // Usar a variável de ambiente
+    port: process.env.DB_PORT, // Usar a variável de ambiente
+    database: process.env.DB_DATABASE, // Usar a variável de ambiente
+    user: process.env.DB_USER, // Usar a variável de ambiente
+    password: process.env.DB_PASSWORD, // Usar a variável de ambiente
     ssl: {
         rejectUnauthorized: false // Ignorar problemas de certificados SSL
     }
