@@ -20,11 +20,11 @@ app.use(express.static(path.join(__dirname, 'public'))); // Certifique-se de que
 
 // Configuração do cliente PostgreSQL
 const client = new Client({
-    host: '', // Altere para o seu host
+    host: 'pg-278b8b8f-fl4sh-cbdb.h.aivencloud.com', // Altere para o seu host
     port: 27783, // Altere para a porta que você está usando
-    database: '', // Nome do seu banco de dados
-    user: '', // Nome de usuário
-    password: '', // Senha
+    database: 'defaultdb', // Nome do seu banco de dados
+    user: 'avnadmin', // Nome de usuário
+    password: 'AVNS_YTUHLeMD2QqdpF4fP-U', // Senha
     ssl: {
         rejectUnauthorized: false // Ignorar problemas de certificados SSL
     }
