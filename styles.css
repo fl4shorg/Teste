@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #6a1b9a; /* Cor roxa */
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: #8e24aa; /* Cor roxa mais clara */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    text-align: center;
+    font-size: 18px; /* Tamanho do título reduzido */
+    margin-bottom: 20px; /* Espaço abaixo do título */
+}
+
+.tutorial {
+    display: flex;
+    align-items: center; /* Alinha o ícone e o texto verticalmente */
+    margin-top: 10px; /* Espaço acima do tutorial */
+    margin-bottom: 10px; /* Espaço abaixo do tutorial */
+    font-size: 12px; /* Tamanho da fonte do tutorial reduzido */
+}
+
+.tutorial i {
+    margin-right: 5px; /* Espaço entre o ícone e o texto */
+    color: red; /* Cor do ícone de notificação */
+    animation: pulse 1.5s infinite; /* Animação de pulsação */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* Espaço acima do formulário */
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%; /* Faz os botões ocuparem toda a largura do container */
+    padding: 10px; /* Adiciona um pouco de espaço interno */
+    background-color: #ab47bc; /* Cor roxa para botões */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Tamanho da fonte */
+    margin-top: 10px; /* Espaço entre os botões */
+}
+
+button:hover {
+    background-color: #9c27b0; /* Tom mais escuro ao passar o mouse */
+}
+
+#sucesso {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    position: relative;
+    top: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#sucesso.visible {
+    opacity: 1; /* Mensagem visível */
+}
+
+.hidden {
+    display: none; /* Oculta a mensagem */
+}
+
+.visible {
+    display: block; /* Mostra a mensagem */
+    animation: fadeIn 1s; /* Animação de entrada */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

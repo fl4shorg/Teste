@@ -1,0 +1,70 @@
+body {
+    background-image: url('inicio.jpg'); /* Verifique se o nome do arquivo está correto */
+    background-size: cover; /* Faz a imagem cobrir toda a tela */
+    background-repeat: no-repeat; /* Impede a repetição da imagem */
+    background-position: center; /* Centraliza a imagem de fundo */
+    font-family: Arial, sans-serif;
+    height: 100vh; /* Faz com que o body ocupe toda a altura da janela */
+    margin: 0; /* Remove margens padrão do body */
+    display: flex; /* Usando flexbox para centralizar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+}
+
+.container {
+    max-width: 300px; /* Largura máxima do formulário */
+    width: 100%; /* Para garantir que se adapte em telas menores */
+    margin: 20px; /* Margem para evitar que o formulário encoste nas bordas */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente para melhor contraste */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+    color: #fff; /* Muda a cor do título para branco */
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #fff; /* Cor do texto dos labels */
+}
+
+input {
+    width: calc(100% - 20px); /* Ajusta a largura para não ultrapassar o contêiner */
+    padding: 10px; /* Mantém um padding interno */
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5cb85c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+#error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    display: none; /* Esconder inicialmente */
+}
+
+#error.visible {
+    display: block; /* Mostrar se houver erro */
+}
+
+.hidden {
+    display: none;
+}

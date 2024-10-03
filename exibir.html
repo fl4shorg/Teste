@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Exibir Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #eaeaea;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Usuários Cadastrados</h1>
+        <ul id="userList"></ul>
+        <a href="index.html">Cadastrar Novo Usuário</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "neext-14b68.firebaseapp.com",  // Ajuste conforme necessário
+            databaseURL: "https://neext-14b68-default-rtdb.firebaseio.com/",
+            projectId: "neext-14b68",
+            storageBucket: "neext-14b68.appspot.com",
+            messagingSenderId: "SUA_SENDER_ID",
+            appId: "SUA_APP_ID"
+        };
+
+        // Inicializar o Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Função para carregar usuários do Firebase
+        function loadUsers() {
+            const userList = document.getElementById('userList');
+
+            database.ref('usuarios').once('value', (snapshot) => {
+                const users = snapshot.val();
+                if (!users) {
+                    userList.innerHTML = '<li>Nenhum usuário cadastrado.</li>';
+                } else {
+                    Object.keys(users).forEach(userId => {
+                        const user = users[userId];
+                        const li = document.createElement('li');
+                        li.textContent = `Nome: ${user.nome} | Email: ${user.email} | Idade: ${user.idade} | Número: ${user.numero} | IP: ${user.ip} | Grupo: ${user.grupo}`;
+                        userList.appendChild(li);
+                    });
+                }
+            });
+        }
+
+        // Carregar usuários ao abrir a página
+        window.onload = loadUsers;
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="login.css"> <!-- Nome do arquivo CSS -->
+    <title>Login</title>
+    <style>
+        body {
+            background-image: url('inicio.jpg'); /* Usando o wallpaper correto */
+            background-size: cover; /* Para cobrir toda a tela */
+            background-position: center; /* Centraliza a imagem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Altura total da janela */
+            margin: 0; /* Remove margens padrão */
+            color: #fff; /* Cor do texto */
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro para contraste */
+            padding: 20px;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra */
+            width: 300px; /* Largura do formulário */
+            text-align: center; /* Centraliza o texto */
+        }
+
+        input {
+            width: calc(100% - 20px); /* Largura total do input menos o padding */
+            padding: 10px; /* Espaçamento interno */
+            margin: 10px 0; /* Margem superior e inferior */
+            border: none; /* Remove bordas padrão */
+            border-radius: 5px; /* Bordas arredondadas nos inputs */
+            font-size: 14px; /* Ajusta o tamanho da fonte */
+        }
+
+        button {
+            width: 100%; /* Largura total do botão */
+            padding: 10px; /* Espaçamento interno */
+            border: none; /* Remove bordas padrão */
+            border-radius: 5px; /* Bordas arredondadas no botão */
+            background-color: #28a745; /* Cor de fundo do botão */
+            color: white; /* Cor do texto do botão */
+            cursor: pointer; /* Cursor em forma de mão ao passar por cima */
+            font-size: 16px; /* Tamanho da fonte do botão */
+        }
+
+        #notification {
+            margin-top: 10px; /* Margem superior para a notificação */
+            display: none; /* Inicialmente oculto */
+            padding: 10px; /* Espaçamento interno */
+            border-radius: 5px; /* Bordas arredondadas */
+        }
+
+        .success {
+            background-color: #d4edda; /* Fundo verde claro para sucesso */
+            color: #155724; /* Texto verde escuro */
+        }
+
+        .error {
+            background-color: #f8d7da; /* Fundo vermelho claro para erro */
+            color: #721c24; /* Texto vermelho escuro */
+        }
+
+        .input-container {
+            position: relative; /* Para permitir o posicionamento absoluto do ícone */
+        }
+
+        .eye-icon {
+            cursor: pointer; /* Cursor em forma de mão ao passar por cima */
+            position: absolute; /* Para posicionamento absoluto em relação ao input */
+            right: 10px; /* Espaço da borda direita */
+            top: 50%; /* Centraliza verticalmente */
+            transform: translateY(-50%); /* Ajusta a posição para centralizar */
+            color: black; /* Cor do ícone */
+            background-color: white; /* Fundo branco para o ícone */
+            border-radius: 50%; /* Bordas arredondadas para o ícone */
+            padding: 5px; /* Espaçamento interno do ícone */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Sombra do ícone */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
+        <form id="loginForm">
+            <label for="username"><i class="fas fa-user"></i> Usuário:</label>
+            <input type="text" id="username" required><br>
+
+            <label for="password"><i class="fas fa-key"></i> Senha:</label>
+            <div class="input-container">
+                <input type="password" id="password" required><br>
+                <i class="fas fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i> <!-- Ícone do olho -->
+            </div>
+
+            <button type="submit"><i class="fas fa-door-open"></i> Entrar</button>
+        </form>
+        <div id="notification" class="hidden"></div> <!-- Div para notificações -->
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('togglePassword');
+
+            // Alterna o tipo do input
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; // Mostra a senha
+                eyeIcon.classList.remove('fa-eye'); // Troca o ícone
+                eyeIcon.classList.add('fa-eye-slash'); // Ícone de olho fechado
+            } else {
+                passwordInput.type = 'password'; // Oculta a senha
+                eyeIcon.classList.remove('fa-eye-slash'); // Troca o ícone
+                eyeIcon.classList.add('fa-eye'); // Ícone de olho aberto
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            // Usa trim() para remover espaços em branco
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            console.log('Tentando logar com usuário:', username); // Log para depuração
+
+            // Faz a requisição para buscar os usuários
+            fetch('../usuarios.json') // Atualize o caminho para usuários.json
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar usuários: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    console.log('Usuários carregados:', users); // Log para depuração
+                    const user = users.find(user => user.usuario === username && user.senha === password);
+                    const notification = document.getElementById('notification');
+
+                    // Limpa a notificação anterior
+                    notification.style.display = 'none';
+
+                    if (user) {
+                        notification.innerHTML = '<i class="fas fa-check-circle"></i> Logado com sucesso!';
+                        notification.className = 'success'; // Classe para mensagem de sucesso
+                        notification.style.display = 'block'; // Mostra a notificação
+                        setTimeout(() => {
+                            window.location.href = 'exibir.html'; // Redireciona após 2 segundos
+                        }, 2000);
+                    } else {
+                        notification.innerHTML = '<i class="fas fa-exclamation-circle"></i> Senha incorreta!';
+                        notification.className = 'error'; // Classe para mensagem de erro
+                        notification.style.display = 'block'; // Mostra a notificação
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    const notification = document.getElementById('notification');
+                    notification.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao carregar usuários!';
+                    notification.className = 'error';
+                    notification.style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>

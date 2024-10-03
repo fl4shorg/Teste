@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários Pendentes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="exibir.css"> <!-- CSS atualizado -->
+    <style>
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            min-width: 250px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        .no-users-message {
+            text-align: center;
+            font-size: 18px;
+            color: gray;
+        }
+        .status.aprovado {
+            color: green;
+        }
+        .status.reprovado {
+            color: red;
+        }
+        .status-icon {
+            margin-right: 5px;
+        }
+        .button-container {
+            margin-top: 10px;
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ccc;
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="header-icon">
+        <i class="fas fa-users"></i><span> Usuários Pendentes</span> <div class="loader"></div>
+    </h1>
+    
+    <div id="aguardando" class="section">
+        <div class="section-title"><i class="fas fa-hourglass-half"></i> Aguardando</div>
+        <div class="loading-message">
+            <p>Aguardando carregamento...</p>
+        </div>
+    </div>
+    
+    <div id="aprovados" class="section aprovados">
+        <div class="section-title"><i class="fas fa-check-circle"></i> Aprovados</div>
+    </div>
+    
+    <div id="reprovados" class="section reprovados">
+        <div class="section-title"><i class="fas fa-times-circle"></i> Reprovados</div>
+    </div>
+
+    <a href="/">Voltar</a>
+    
+    <div id="message" class="message"></div> <!-- Mensagem de status -->
+
+    <script>
+        fetch('/api/dados')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na rede: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(entries => {
+                const aprovadosContainer = document.getElementById('aprovados');
+                const reprovadosContainer = document.getElementById('reprovados');
+                const aguardandoContainer = document.getElementById('aguardando');
+                const loadingMessage = document.querySelector('.loading-message');
+
+                // Remover a animação de carregamento
+                loadingMessage.style.display = 'none';
+
+                let aprovadosCount = 0;
+                let reprovadosCount = 0;
+                let aguardandoCount = 0;
+
+                if (entries.length === 0) {
+                    aguardandoContainer.innerHTML += '<p>Não há usuários aguardando.</p>';
+                    aprovadosContainer.innerHTML += '<p>Não há usuários aprovados.</p>';
+                    reprovadosContainer.innerHTML += '<p>Não há usuários reprovados.</p>';
+                } else {
+                    entries.forEach(entry => {
+                        const userCard = document.createElement('div');
+                        userCard.className = 'user-card';
+                        userCard.innerHTML = `
+                            <p><i class="fas fa-envelope icon"></i>Email: ${entry.email}</p>
+                            <p><i class="fas fa-user icon"></i>Nome: ${entry.nome}</p>
+                            <p><i class="fas fa-calendar-alt icon"></i>Idade: ${entry.idade}</p>
+                            <p><i class="fas fa-phone icon"></i>Número: ${entry.numero}</p>
+                            <p><i class="fas fa-users icon"></i>Grupo: ${entry.grupo}</p>
+                            <p><i class="fas fa-comment-dots icon"></i>Motivo: ${entry.motivo}</p>
+                            <p><i class="fas fa-laptop icon"></i>IP: ${entry.ip}</p>
+                            <p><i class="fas fa-id-badge icon"></i>ID: ${entry.id}</p>
+                        `;
+
+                        // Adicionar apenas se o status for 'aguarde'
+                        if (entry.status.toLowerCase() === 'aguarde') {
+                            userCard.innerHTML += `
+                                <div class="button-container">
+                                    <button class="button aprovar"><i class="fas fa-check-circle"></i> Aprovar</button>
+                                    <button class="button reprovar"><i class="fas fa-times-circle"></i> Reprovar</button>
+                                </div>
+                            `;
+
+                            // Adicionar evento de clique para aprovar
+                            userCard.querySelector('.aprovar').addEventListener('click', () => {
+                                updateStatus(entry.nome, 'aprovado', userCard);
+                            });
+
+                            // Adicionar evento de clique para reprovar
+                            userCard.querySelector('.reprovar').addEventListener('click', () => {
+                                updateStatus(entry.nome, 'reprovado', userCard);
+                            });
+
+                            aguardandoContainer.appendChild(userCard);
+                            aguardandoCount++;
+                        } else if (entry.status.toLowerCase() === 'aprovado') {
+                            const aprovadoCard = document.createElement('div');
+                            aprovadoCard.className = 'user-card';
+                            aprovadoCard.innerHTML = `
+                                <p><i class="fas fa-envelope icon"></i>Email: ${entry.email}</p>
+                                <p><i class="fas fa-user icon"></i>Nome: ${entry.nome}</p>
+                                <p><i class="fas fa-calendar-alt icon"></i>Idade: ${entry.idade}</p>
+                                <p><i class="fas fa-phone icon"></i>Número: ${entry.numero}</p>
+                                <p><i class="fas fa-users icon"></i>Grupo: ${entry.grupo}</p>
+                                <p><i class="fas fa-comment-dots icon"></i>Motivo: ${entry.motivo}</p>
+                                <p><i class="fas fa-laptop icon"></i>IP: ${entry.ip}</p>
+                                <p><i class="fas fa-id-badge icon"></i>ID: ${entry.id}</p>
+                                <p><i class="fas fa-check-circle status-icon"></i> <span class="status aprovado">Aprovado</span></p>
+                            `;
+                            aprovadosContainer.appendChild(aprovadoCard);
+                            aprovadosCount++;
+                        } else if (entry.status.toLowerCase() === 'reprovado') {
+                            const reprovadoCard = document.createElement('div');
+                            reprovadoCard.className = 'user-card';
+                            reprovadoCard.innerHTML = `
+                                <p><i class="fas fa-envelope icon"></i>Email: ${entry.email}</p>
+                                <p><i class="fas fa-user icon"></i>Nome: ${entry.nome}</p>
+                                <p><i class="fas fa-calendar-alt icon"></i>Idade: ${entry.idade}</p>
+                                <p><i class="fas fa-phone icon"></i>Número: ${entry.numero}</p>
+                                <p><i class="fas fa-users icon"></i>Grupo: ${entry.grupo}</p>
+                                <p><i class="fas fa-comment-dots icon"></i>Motivo: ${entry.motivo}</p>
+                                <p><i class="fas fa-laptop icon"></i>IP: ${entry.ip}</p>
+                                <p><i class="fas fa-id-badge icon"></i>ID: ${entry.id}</p>
+                                <p><i class="fas fa-times-circle status-icon"></i> <span class="status reprovado">Reprovado</span></p>
+                            `;
+                            reprovadosContainer.appendChild(reprovadoCard);
+                            reprovadosCount++;
+                        }
+                    });
+                }
+
+                // Exibir mensagem caso não haja usuários pendentes
+                if (aguardandoCount === 0) {
+                    aguardandoContainer.innerHTML += '<p>Não há usuários aguardando.</p>';
+                }
+
+                // Atualizar o título com o número de aprovados e reprovados
+                document.title = `Aprovados: ${aprovadosCount} | Reprovados: ${reprovadosCount}`;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar os dados:', error);});
+
+        function updateStatus(nome, status, userCard) {
+            fetch('/api/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome: nome, status: status })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na atualização do status: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Exibir mensagem de sucesso
+                const messageElement = document.getElementById('message');
+                messageElement.textContent = `${nome} foi ${status} com sucesso.`;
+                messageElement.className = 'message success';
+                messageElement.style.display = 'block';
+
+                // Remover o card do usuário da lista
+                userCard.remove();
+
+                // Recarregar a página após um breve atraso
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                const messageElement = document.getElementById('message');
+                messageElement.textContent = 'Erro ao atualizar status: ' + error.message;
+                messageElement.className = 'message error';
+                messageElement.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

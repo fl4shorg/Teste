@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('inicio.jpg'); /* Caminho da imagem de fundo */
+    background-size: cover; /* A imagem cobre todo o fundo */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita repetição da imagem */
+    color: white;
+    margin: 0;
+    padding: 20px;
+    position: relative; /* Adicionado para a camada escura */
+}
+
+body::after {
+    content: ""; /* Cria um pseudo-elemento */
+    position: absolute; /* Posiciona o pseudo-elemento */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Camada escura com 50% de opacidade */
+    z-index: 1; /* Coloca a camada escura atrás do conteúdo */
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.2); /* Cor branca com transparência */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px); /* Leve desfoque no fundo do container */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda branca suave */
+    position: relative; /* Para garantir que o conteúdo apareça acima da camada escura */
+    z-index: 2; /* Garante que o conteúdo do container fique acima da camada escura */
+}
+
+h1 {
+    text-align: center;
+    font-size: 18px; /* Tamanho do título reduzido */
+    margin-bottom: 20px; /* Espaço abaixo do título */
+}
+
+.tutorial {
+    display: flex;
+    align-items: center; /* Alinha o ícone e o texto verticalmente */
+    margin-top: 10px; /* Espaço acima do tutorial */
+    margin-bottom: 10px; /* Espaço abaixo do tutorial */
+    font-size: 12px; /* Tamanho da fonte do tutorial reduzido */
+}
+
+.tutorial i {
+    margin-right: 5px; /* Espaço entre o ícone e o texto */
+    color: red; /* Cor do ícone de notificação */
+    animation: pulse 1.5s infinite; /* Animação de pulsação */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px; /* Espaço acima do formulário */
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%; /* Faz os botões ocuparem toda a largura do container */
+    padding: 10px; /* Adiciona um pouco de espaço interno */
+    background-color: #ab47bc; /* Cor roxa para botões */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Tamanho da fonte */
+    margin-top: 10px; /* Espaço entre os botões */
+}
+
+button:hover {
+    background-color: #9c27b0; /* Tom mais escuro ao passar o mouse */
+}
+
+#sucesso {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    position: relative;
+    top: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#sucesso.visible {
+    opacity: 1; /* Mensagem visível */
+}
+
+.hidden {
+    display: none; /* Oculta a mensagem */
+}
+
+.visible {
+    display: block; /* Mostra a mensagem */
+    animation: fadeIn 1s; /* Animação de entrada */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

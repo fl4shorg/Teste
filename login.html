@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
+        <form id="loginForm">
+            <label for="username"><i class="fas fa-user"></i> Usuário:</label>
+            <input type="text" id="username" required><br><br>
+
+            <label for="password"><i class="fas fa-key"></i> Senha:</label>
+            <input type="password" id="password" required><br><br>
+
+            <button type="submit"><i class="fas fa-door-open"></i> Entrar</button>
+        </form>
+        <div id="erro" class="hidden">Usuário ou senha incorretos!</div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            // Usa trim() para remover espaços em branco
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // Faz a requisição para buscar os usuários
+            fetch('usuarios.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar usuários');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    const user = users.find(user => user.usuario === username && user.senha === password);
+                    if (user) {
+                        window.location.href = 'exibir.html'; // Redireciona para a página de exibição
+                    } else {
+                        const erro = document.getElementById('erro');
+                        erro.classList.remove('hidden');
+                        erro.classList.add('visible');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+        });
+    </script>
+</body>
+</html>
